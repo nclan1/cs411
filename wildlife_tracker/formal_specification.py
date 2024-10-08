@@ -20,7 +20,7 @@ geographic_area: str
 habitat_id: int
 habitats: dict[int, Habitat] = {}
 health_status: Optional[str] = None
-migration_id: int
+# migration_id: int
 migration_path: MigrationPath
 migrations: dict[int, Migration] = {}
 path_id: int
