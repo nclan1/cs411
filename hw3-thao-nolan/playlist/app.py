@@ -566,7 +566,7 @@ def move_song_to_beginning() -> Response:
 
     Returns:
         JSON response indicating success or an error message.
-    """
+    """T
     try:
         data = request.get_json()
 
