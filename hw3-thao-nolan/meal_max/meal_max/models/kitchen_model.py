@@ -51,7 +51,7 @@ def create_meal(meal: str, cuisine: str, price: float, difficulty: str) -> None:
         difficulty (str): The difficulty level of preparing the meal, can only be LOW, MED, or HIGH.
     
     Raises: 
-        ValueError: If the price is negative or the difficulty is invalid.
+        ValueError: If the price is negative, the difficulty is invalid or if there is a duplicate.
     """
 
     if not isinstance(price, (int, float)) or price <= 0:
@@ -115,7 +115,7 @@ def get_leaderboard(sort_by: str="wins") -> dict[str, Any]:
     """ Gets the leaderboard of meals that is sorted by wins or win percentage.
 
     Args:
-        sort_by (str): Organizes the field to sort the dead based on wins or win percentage.
+        sort_by (str): Organizes the field to sort the data based on wins or win percentage.
     
     Returns:
         Leaderboard which is a list of dictionaries with all of the sorted meals.
@@ -231,7 +231,6 @@ def get_meal_by_name(meal_name: str) -> Meal:
 
 def update_meal_stats(meal_id: int, result: str) -> None:
     """ Update the battle statistics for the meal based on the battle results.
-
 
     Args:
         meal_id (int): The ID of the meal to be updated.
