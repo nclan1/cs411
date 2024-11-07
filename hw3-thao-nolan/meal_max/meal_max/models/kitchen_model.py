@@ -13,6 +13,16 @@ configure_logger(logger)
 
 @dataclass
 class Meal:
+    """Class meal represents a meal with the relevant attributes of the meal.
+
+    Attributes:
+        id (int): the identification of the meal 
+        meal (str): the name of the meal 
+        cuisine (str): the type of cuisine the meal is
+        price (float): the price of the meal
+        difficulty (str): the difficulty type when preparing the meal
+
+    """
     id: int
     meal: str
     cuisine: str
@@ -20,6 +30,11 @@ class Meal:
     difficulty: str
 
     def __post_init__(self):
+        """Function __post_init__ checks that the prices are non-negative and the difficulty is either LOW, MED, or HIGH.
+        
+        Raises: 
+            ValueError: if the conditions are not met.
+        """
         if self.price < 0:
             raise ValueError("Price must be a positive value.")
         if self.difficulty not in ['LOW', 'MED', 'HIGH']:
@@ -27,6 +42,18 @@ class Meal:
 
 
 def create_meal(meal: str, cuisine: str, price: float, difficulty: str) -> None:
+    """Creates a new meal into the database.
+    
+    Args:
+        meal (str): The name of the meal
+        cuisine (str): The type of cuisine of the meal
+        price (float): The price of the meal 
+        difficulty (str): The difficulty level of preparing the meal, can only be LOW, MED, or HIGH.
+    
+    Raises: 
+        ValueError: If the price is negative, the difficulty is invalid or if there is a duplicate.
+    """
+
     if not isinstance(price, (int, float)) or price <= 0:
         raise ValueError(f"Invalid price: {price}. Price must be a positive number.")
     if difficulty not in ['LOW', 'MED', 'HIGH']:
@@ -53,6 +80,15 @@ def create_meal(meal: str, cuisine: str, price: float, difficulty: str) -> None:
 
 
 def delete_meal(meal_id: int) -> None:
+    """ Function delete_meal: Removes meal from the database.
+
+    Args: 
+        meal_id (int): the id of the meal that will be deleted.
+
+    Raises: 
+        ValueError: if the meal has already been deleted or if it was not found.
+    """
+
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
@@ -76,6 +112,18 @@ def delete_meal(meal_id: int) -> None:
         raise e
 
 def get_leaderboard(sort_by: str="wins") -> dict[str, Any]:
+    """ Gets the leaderboard of meals that is sorted by wins or win percentage.
+
+    Args:
+        sort_by (str): Organizes the field to sort the data based on wins or win percentage.
+    
+    Returns:
+        Leaderboard which is a list of dictionaries with all of the sorted meals.
+
+    Raises:
+        ValueError: There is invalid sort_by.
+    """
+
     query = """
         SELECT id, meal, cuisine, price, difficulty, battles, wins, (wins * 1.0 / battles) AS win_pct
         FROM meals WHERE deleted = false AND battles > 0
@@ -117,6 +165,17 @@ def get_leaderboard(sort_by: str="wins") -> dict[str, Any]:
         raise e
 
 def get_meal_by_id(meal_id: int) -> Meal:
+    """ Get the meal based on its ID. 
+
+    Args:
+        meal_id (int): The ID of the meal that wants to be selected.
+
+    Returns: 
+        The meal with all of its data.
+
+    Raises:
+        ValueError: If the meal has already been deleted or it does not exist.
+    """
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
@@ -138,6 +197,18 @@ def get_meal_by_id(meal_id: int) -> Meal:
 
 
 def get_meal_by_name(meal_name: str) -> Meal:
+    """ Get the meal based on its name. 
+
+    Args:
+        meal_name (str): The name of the meal that wants to be selected.
+
+    Returns: 
+        The meal with all of its data.
+
+    Raises:
+        ValueError: If the meal has already been deleted or it does not exist.
+    """
+
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
@@ -159,6 +230,16 @@ def get_meal_by_name(meal_name: str) -> Meal:
 
 
 def update_meal_stats(meal_id: int, result: str) -> None:
+    """ Update the battle statistics for the meal based on the battle results.
+
+    Args:
+        meal_id (int): The ID of the meal to be updated.
+        result (str): The result of the battle-- either win or loss
+
+    Raises:
+        ValueError: If the meal has already been deleted, it does not exist, or if the result is invalid. 
+    """
+
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
