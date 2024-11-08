@@ -140,6 +140,57 @@ def test_delete_meal_already_deleted(mock_cursor):
         delete_meal(123)
         
         
+#########leader board
+
+def test_get_leaderboard_sorted_by_wins(mock_cursor):
+    """Test get_leaderboard sorted by 'wins'."""
+    
+    # Mock the data returned by the database for leaderboard
+    mock_cursor.fetchall.return_value = [
+        (1, "Meal A", "Cuisine A", 10.0, "LOW", 10, 8, 0.8),
+        (2, "Meal B", "Cuisine B", 12.0, "MED", 15, 7, 0.47),
+        (3, "Meal C", "Cuisine C", 8.0, "HIGH", 20, 5, 0.25)
+    ]
+    
+    leaderboard = get_leaderboard(sort_by="wins")
+    
+    expected_leaderboard = [
+        {
+            'id': 1,
+            'meal': "Meal A",
+            'cuisine': "Cuisine A",
+            'price': 10.0,
+            'difficulty': "LOW",
+            'battles': 10,
+            'wins': 8,
+            'win_pct': 80.0
+        },
+        {
+            'id': 2,
+            'meal': "Meal B",
+            'cuisine': "Cuisine B",
+            'price': 12.0,
+            'difficulty': "MED",
+            'battles': 15,
+            'wins': 7,
+            'win_pct': 47.0
+        },
+        {
+            'id': 3,
+            'meal': "Meal C",
+            'cuisine': "Cuisine C",
+            'price': 8.0,
+            'difficulty': "HIGH",
+            'battles': 20,
+            'wins': 5,
+            'win_pct': 25.0
+        },
+    ]
+    
+    assert leaderboard == expected_leaderboard, f"Expected {expected_leaderboard}, got {leaderboard}"
+
+        
+        
 ######################################################
 #
 #    Get Meal
