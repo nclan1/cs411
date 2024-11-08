@@ -7,9 +7,12 @@ from meal_max.utils.logger import configure_logger
 from meal_max.utils.random_utils import get_random
 from meal_max.models.battle_model import BattleModel
 
+
+@pytest.fixture()
 def battle_model():
     """Fixture to provide a new instance of BattleModel for each test."""
     return BattleModel()
+
 
 @pytest.fixture
 def sample_meal_1():
