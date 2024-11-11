@@ -39,8 +39,80 @@ check_db() {
     exit 1
 }
 
+# Function to create a meal and add to database
 
+create_meal() {
+  meal=$1
+  cuisine=$2
+  price=$3
+  difficulty=$4
 
+  echo "Creating a meal ($meal - $cuisine - $difficulty) to the database..."
+  response=$(curl -s -X POST "$BASE_URL/create-meal" -H "Content-Type: application/json" \
+    -d "{\"meal\":\"$meal\", \"cuisine\":\"$cuisine\", \"price\":$price, \"difficulty\":\"$difficulty\"}")
+
+  if echo "$response" | grep -q '"status": "combatant added"'; then
+    echo "Meal added successfully to database."
+  else
+    echo "Failed to add meal."
+    exit 1
+  fi
+}
+
+# Function to delete a meal from database
+
+delete_meal() {
+  meal_id=$1
+
+  echo "Deleting a meal by ID ($meal_id)..."
+  response=$(curl -s -X DELETE "$BASE_URL/delete-meal/$meal_id")
+  if echo "$response" | grep -q '"status": "meal deleted"'; then
+    echo "Meal deleted successfully by ID ($meal_id)."
+  else
+    echo "Failed to delete meal by ID ($meal_id)."
+    exit 1
+  fi
+}
+
+# Function to get meal by id
+
+get_meal_by_id() {
+  meal_id=$1
+
+  echo "Getting meal by ID ($meal_id)..."
+
+  response=$(curl -s -X GET "$BASE_URL/get-meal-by-id/$meal_id")
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "Meal retrieved successfully by ID ($meal_id)."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Mea JSON (ID $meal_id):"
+      echo "$response" | jq .
+    fi
+  else
+    echo "Failed to get meal id ($meal_id)."
+    exit 1
+  fi
+}
+
+# Function to get meal by name
+
+get_meal_by_name() {
+  meal_name=$1
+
+  echo "Getting meal by ID ($meal_name)..."
+
+  response=$(curl -s -X GET "$BASE_URL/get-meal-by-name/$meal_name")
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "Meal retrieved successfully by ID ($meal_name)."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Mea JSON (ID $meal_name):"
+      echo "$response" | jq .
+    fi
+  else
+    echo "Failed to get meal id ($meal_name)."
+    exit 1
+  fi
+}
 
 
 
