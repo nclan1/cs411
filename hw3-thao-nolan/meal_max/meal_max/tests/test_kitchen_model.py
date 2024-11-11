@@ -89,7 +89,7 @@ def test_create_meal_invalid_price():
 
 def test_create_meal_invalid_difficulty():
     """Test error when creating a meal with invalid difficulty """
-    with pytest.raises(ValueError, match="Difficulty must be 'LOW', 'MED', or 'HIGH'."):
+    with pytest.raises(ValueError, match="Invalid difficulty level: randomDifficulty. Must be 'LOW', 'MED', or 'HIGH'."):
         create_meal(meal="Meal Name", cuisine="Cuisine Name", price=6.2, difficulty="randomDifficulty")
 
 
