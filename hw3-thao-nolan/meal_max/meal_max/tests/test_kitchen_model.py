@@ -135,7 +135,7 @@ def test_delete_meal_already_deleted(mock_cursor):
     
     mock_cursor.fetchone.return_value = ([True])        
     
-    with pytest.raises(ValueError, match="Meal with ID 123 has already been deleted"):
+    with pytest.raises(ValueError, match="Meal with ID 123 has been deleted"):
         delete_meal(123)
         
         
@@ -199,7 +199,7 @@ def test_get_leaderboard_sorted_by_wins(mock_cursor):
 def test_get_meal_by_id(mock_cursor):
     
     #simulate meal exists, the 1 is the id
-    mock_cursor.fetchone.return_value = (1, "Meal Name", "Cuisine Name", 6.2, "LOW")
+    mock_cursor.fetchone.return_value = (1, "Meal Name", "Cuisine Name", 6.2, "LOW", 0)
     
     result = get_meal_by_id(1)
     
