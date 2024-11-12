@@ -37,6 +37,7 @@ check_db() {
   else
     echo "Database check failed."
     exit 1
+    fi
 }
 
 # Function to create a meal and add to database
@@ -85,7 +86,7 @@ get_meal_by_id() {
   if echo "$response" | grep -q '"status": "success"'; then
     echo "Meal retrieved successfully by ID ($meal_id)."
     if [ "$ECHO_JSON" = true ]; then
-      echo "Mea JSON (ID $meal_id):"
+      echo "Meal JSON (ID $meal_id):"
       echo "$response" | jq .
     fi
   else
@@ -115,8 +116,6 @@ get_meal_by_name() {
 }
 
 
-
-
 # Function to initiate battle between combatants
 
 battle() {
@@ -136,7 +135,6 @@ battle() {
 }
 
 
-
 # Function to clear combatants
 
 clear_combatants() {
@@ -146,7 +144,7 @@ clear_combatants() {
   if echo "$response" | grep -q '"status": "combatants cleared"'; then
     echo "Combatants cleared successfully."
   else
-    echo "Failed to clear playlist."
+    echo "Failed to clear combatants."
     exit 1
   fi
 }
@@ -187,12 +185,11 @@ prep_combatant() {
 }
 
 
-
 # Function to get the meal leaderboard sorted
 
 get_leader_board_by_wins() {
   echo "Getting leaderboard of meals sorted by wins..."
-  response=$(curl -s -X GET "$BASE_URL/leaderboard?sort=wins")
+  response=$(curl -s -X GET "$BASE_URL/leaderboard")
   if echo "$response" | grep -q '"status": "success"'; then
     echo "Leaderboard retrieved successfully."
     if [ "$ECHO_JSON" = true ]; then
@@ -232,4 +229,41 @@ get_leader_board_by_win_pct() {
     exit 1
   fi
 }
+
+# Health checks
+check_health
+check_db
+
+# Create meals 
+create_meal "Pasta" "Italian" 12.52 "MED"
+create_meal "Burrito" "Mexican" 8.30 "LOW"
+
+# Delete meal
+delete_meal 1
+
+# Retrieve meal by its ID
+get_meal_by_id 2
+
+# Retrieve the created meal by name
+get_meal_by_name "Burrito"
+
+# Prepare the created meal as a combatant
+prep_combatant "Pasta"
+
+# Retrieve combatants
+get_combatants
+
+# Initiate battle
+battle
+
+# Retrieve leaderboard sorted by different metrics 
+get_leader_board_by_wins
+get_leader_board_by_battles
+get_leader_board_by_win_pct
+
+# Clear combatants list after testing
+clear_combatants
+
+echo "All tests passed successfully!"
+
 
