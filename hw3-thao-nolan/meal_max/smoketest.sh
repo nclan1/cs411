@@ -75,6 +75,18 @@ delete_meal() {
   fi
 }
 
+clear_catalog() {
+
+  echo "Clearing the meals..."
+  response=$(curl -s -X DELETE "$BASE_URL/clear-meals")
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "Meals cleared successfully."
+  else
+    echo "Failed to clear meals."
+    exit1
+  fi
+}
+
 # Function to get meal by id
 
 get_meal_by_id() {
@@ -234,6 +246,7 @@ get_leader_board_by_win_pct() {
 check_health
 check_db
 
+clear_catalog
 # Create meals 
 create_meal "Pasta" "Italian" 12.52 "MED"
 create_meal "Burrito" "Mexican" 8.30 "LOW"
@@ -248,7 +261,7 @@ get_meal_by_id 2
 get_meal_by_name "Burrito"
 
 # Prepare the created meal as a combatant
-prep_combatant "Pasta"
+prep_combatant "Burrito"
 
 # Retrieve combatants
 get_combatants

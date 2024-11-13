@@ -12,6 +12,7 @@ from meal_max.models.kitchen_model import (
     get_meal_by_id,
     get_meal_by_name,
     update_meal_stats,
+    clear_meals
 )
 ######################################################
 #
@@ -92,6 +93,28 @@ def test_create_meal_invalid_difficulty():
     with pytest.raises(ValueError, match="Invalid difficulty level: randomDifficulty. Must be 'LOW', 'MED', or 'HIGH'."):
         create_meal(meal="Meal Name", cuisine="Cuisine Name", price=6.2, difficulty="randomDifficulty")
 
+def test_clear_meals(mock_cursor):
+    
+    clear_meals()
+
+    # Define the expected SQL, normalized for consistency in whitespace
+    expected_sql = normalize_whitespace("CREATE TABLE meals (id INTEGER PRIMARY KEY)")
+
+    # Verify that executescript was called with the expected SQL script
+    actual_sql = normalize_whitespace(mock_cursor.executescript.call_args[0][0])
+    assert actual_sql == expected_sql, f"Expected SQL {expected_sql}, but got {actual_sql}"
+
+    
+def test_clear_meals_error(mock_cursor):
+    
+    # Simulate a database error during executescript
+    mock_cursor.executescript.side_effect = sqlite3.Error("Mocked database error")
+
+    # Expect an sqlite3.Error to be raised when clear_meals is called
+    with pytest.raises(sqlite3.Error, match="Mocked database error"):
+        clear_meals()
+
+    
 
 def test_delete_meal(mock_cursor):
     """Test soft deleting a Meal from the catalog by meal_id"""
